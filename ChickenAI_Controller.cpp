@@ -19,8 +19,6 @@ void AChickenAI_Controller::Tick(float DeltaTime){
 
 	Super::Tick(DeltaTime);
 
-	Wander();
-
 }
 
 // Called when the game starts or when spawned
@@ -28,38 +26,56 @@ void AChickenAI_Controller::BeginPlay(){
 
 	Super::BeginPlay();
 
-	FVector StartPos = GetPawn()->GetActorLocation();
-	GetRandomPointInRadius(StartPos, Destination);
+	Destination.X = -247.0f;
+	Destination.Y = 60.0f;
+	Destination.Z = 78.0f;
+	
+	AAIController::MoveToLocation(Destination);
 
 }
 
 void AChickenAI_Controller::Wander() {
-
+	/*
 	FVector StartPos = GetPawn()->GetActorLocation();
 	//GetRandomPointInRadius(StartPos, Destination);
 
 	//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Calculating!"));
 
-	if (StartPos != Destination) {
+	if (!(StartPos.Equals(Destination,0.01f))) {
 
 		AAIController::MoveToLocation(Destination,10.0f,true,true,false,true);
-
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Movin!"));
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, StartPos.ToString());
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Destination.ToString());
+		//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Movin!"));
 
 	} else {
 
 		GetRandomPointInRadius(StartPos, Destination);
 		//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Calculating!"));
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, StartPos.ToString());
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Destination.ToString());
+		//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, StartPos.ToString());
+		//if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Destination.ToString());
+
+		
 
 	}
-	
+	*/
+
+	FVector StartPos = GetPawn()->GetActorLocation();
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, StartPos.ToString());
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, Destination.ToString());
+
+	if (StartPos.Equals(Destination, 0.01f)) {
+
+		GetRandomPointInRadius(StartPos, Destination);
+		AAIController::MoveToLocation(Destination);
+
+	}
+
 }
 
 bool AChickenAI_Controller::GetRandomPointInRadius(FVector& Origin, FVector& OutResult) {
 
-	float SearchRadius = 300.0f;
+	float SearchRadius = 9000.0f;
 
 	if (GetWorld()) {
 
@@ -82,4 +98,10 @@ bool AChickenAI_Controller::GetRandomPointInRadius(FVector& Origin, FVector& Out
 	}
 
 	return false;
+}
+
+void AChickenAI_Controller::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) {
+
+	Super::OnMoveCompleted(RequestID, Result);
+	if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Moves!"));
 }

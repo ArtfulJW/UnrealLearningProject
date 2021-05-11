@@ -27,6 +27,8 @@ public:
 
 	FVector Destination;
 
+	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
+
 protected:
 
 	// Called when the game starts or when spawned
